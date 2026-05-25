@@ -1,0 +1,13 @@
+{
+  "commands": {
+    "Run and Compile": "bash run.bash",
+    "Node version": "node --version"
+  },
+  "preview": {
+    "Virtual Desktop": "https://{{domain3050}}/",
+    "Project Index (static)": "https://{{domain}}/{{index}}",
+    "Current File (static)": "https://{{domain}}/{{filepath}}",
+    "Box URL": "https://{{domain3000}}/"
+  }
+
+}
