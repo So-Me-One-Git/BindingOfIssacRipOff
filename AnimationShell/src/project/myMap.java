@@ -206,6 +206,7 @@ public class myMap {
 			makeNoise();
 			connectAllClusters();
 			if(percentFilled() > 0.35) {
+				makeBarrier();
 				return;
 			}else {
 				makeMap(x,y, size + (x+y)/10);
@@ -213,6 +214,30 @@ public class myMap {
 		}catch(Exception e) {
 			makeMap(x,y, size + (x+y)/10);
 		}
+	}
+	public void makeBarrier() {
+			for(int y = 0; y < getMaxY(); y++) {
+				for(int x = 0; x < getMaxX(); x++) {
+						if(getElement(x,y) == 0 && adjacentOne(x,y)) {
+							setElement(x, y, 2);
+						}
+					}
+				}
+	}
+	public boolean adjacentOne(int x, int y) {
+	    if (checkInBounds(x, y + 1) && getElement(x, y + 1) == 1) {
+	        return true;
+	    }
+	    if (checkInBounds(x, y - 1) && getElement(x, y - 1) == 1) {
+	        return true;
+	    }
+	    if (checkInBounds(x + 1, y) && getElement(x + 1, y) == 1) {
+	        return true;
+	    }
+	    if (checkInBounds(x - 1, y) && getElement(x - 1, y) == 1) {
+	        return true;
+	    }
+	    return false;
 	}
 	
 	public float percentFilled() {
