@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class myMap {
 	private int xPos = 0;
 	private int yPos = 0;
+	private double fillPercent = 0.35;
 	private int startxPos;
 	private int startyPos;
 	private static final Random random = new Random();
@@ -157,10 +158,12 @@ public class myMap {
 			}
 			return ranDirection;
 		}catch(OverlapException e) {
-			if(checkStuck()) {
+			if(checkStuck() && percentFilled() != 1) {
 				findRandomRoom();
+				return makeRandomRoom(biasUp, biasDown, biasLeft, biasRight);
+			}else {
+				return"";
 			}
-			return makeRandomRoom(biasUp, biasDown, biasLeft, biasRight);
 		}
 	}
 	public boolean oneExist() {
@@ -178,6 +181,9 @@ public class myMap {
 			int ranY = random.nextInt(getMaxY());
 			int currentX = getxPos();
 			int currentY = getyPos();
+			if(percentFilled() == 1) {
+				return false;
+			}
 			if (getElement(ranX, ranY) == 1) {
 				setxPos(ranX);
 				setyPos(ranY);
@@ -195,25 +201,35 @@ public class myMap {
 		return false;
 	}
 	public void makeMap(int x, int y) {
-		makeMap(x,y,x+y);
+		makeMap(x,y,1);
 	}
 
 	public void makeMap(int x, int y, int size) {
-		try {
 			dynamicMap(x, y);
 			setStartPos(x/2, y/2);
 			makeFracture(size);
 			makeNoise();
 			connectAllClusters();
-			if(percentFilled() > 0.35) {
-				makeBarrier();
-				return;
+			if(percentFilled() < this.fillPercent) {
+				makeMap(x,y,(int)(this.fillPercent/ percentFilled() * size));
 			}else {
-				makeMap(x,y, size + (x+y)/10);
+				dynamicMap = expandWithBorder(dynamicMap);
+				makeBarrier();
 			}
-		}catch(Exception e) {
-			makeMap(x,y, size + (x+y)/10);
-		}
+	}
+	public int[][] expandWithBorder(int[][] grid) {
+	    int rows = grid.length;
+	    int cols = grid[0].length;
+
+	    int[][] expanded = new int[rows + 2][cols + 2];
+
+	    for (int y = 0; y < rows; y++) {
+	        for (int x = 0; x < cols; x++) {
+	            expanded[y + 1][x + 1] = grid[y][x];
+	        }
+	    }
+
+	    return expanded;
 	}
 	public void makeBarrier() {
 			for(int y = 0; y < getMaxY(); y++) {
