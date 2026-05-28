@@ -1,4 +1,4 @@
-package project;
+
 import java.util.Random;
 import java.util.ArrayList;
 
@@ -9,7 +9,7 @@ public class myMap {
 	private int startxPos;
 	private int startyPos;
 	private static final Random random = new Random();
-	int[][] dynamicMap;
+	private int[][] dynamicMap;
 
 	public void setStartPos(int x, int y) {
 		this.startxPos = x;
@@ -44,6 +44,9 @@ public class myMap {
 	}
 	public void setElement(int x, int y, int value) {
 		dynamicMap[y][x] = value;
+	}
+	public int[][] getDynamicMap() {
+		return dynamicMap;
 	}
 	public void goUp() throws OverlapException {
 		if(!checkOverlap("up")) {
