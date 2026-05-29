@@ -27,11 +27,11 @@ public class ShellUniverse implements Universe {
 	}
 
 	public double getXCenter() {
-		return 0;
+		return player1.getCenterX();
 	}
 
 	public double getYCenter() {
-		return 0;
+		return player1.getCenterY();
 	}
 
 	public void setXCenter(double xCenter) {

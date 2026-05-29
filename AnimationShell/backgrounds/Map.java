@@ -9,26 +9,37 @@ public class Map implements Background{
 	static int pixelHeight = 64;// TO BE DETERMINED
 	static int pixelWidth = 64;// TO BE DETERMINED
 	private int map[][];
-	private Image wallTile;
-	private Image backgroundTile;
+	
+	private Image image0001 = null;
+	
 	myMap mapMaker = new myMap();
 	public Map() {
 		mapMaker.makeMap(10, 10);
 		this.map = mapMaker.getDynamicMap();
+		
 		try {
-			this.backgroundTile = ImageIO.read(new File("res/0,0,0,0.png"));
+			image0001 = ImageIO.read(new File("res/0,0,0,0.png"));
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
+		
 	}
-	@Override
-	public Tile getTile(int x, int y) {
-		System.out.println("getTile called with x=" + x + " y=" + y);
-		int xSize = (x * pixelWidth );
-		int ySize = (y * pixelHeight);
-		Tile newTile = null;
+	private Image selectImage(int x, int y) {
+		if (y < 0 || y >= map.length  || x < 0 || x >= map[0].length) {
+			return null;			
+		}
+		if (map[y][x] == 0) {
+			return null;
+		}
 		if(map[y][x] == 1) {
-			newTile = new Tile (this.backgroundTile,xSize,ySize,pixelWidth,pixelHeight,false);
+			try {
+				return ImageIO.read(new File("res/0,0,0,0.png"));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		if (map[y][x] == 2) {
 			int up = 0;
@@ -49,24 +60,34 @@ public class Map implements Background{
 			}
 			String wallSides =String.format("%d,%d,%d,%d",up,down,left,right);
 			try {
-				this.wallTile = ImageIO.read(new File(String.format("res/%s.png", wallSides)));
+				return  ImageIO.read(new File(String.format("res/%s.png", wallSides)));
 			} catch (IOException e) {
-				System.out.println(e.toString());
 				e.printStackTrace();
 			}
-			newTile = new Tile (this.wallTile, x, y, pixelWidth, pixelHeight, false);
-
 		}
+		return null;
+	}
+	public Tile getTile(int x, int y) {
+
+		Tile newTile = new Tile (null, x, y, pixelWidth, pixelHeight, false);
+
+		if (y < 0 || y >= map.length  || x < 0 || x >= map[0].length) {
+			return newTile;			
+		}
+		int xSize = (x * pixelWidth );
+		int ySize = (y * pixelHeight);
+		newTile = new Tile (selectImage(x,y),xSize,ySize,pixelWidth,pixelHeight,false);
 		return newTile;
 	}
 	public ArrayList<DisplayableSprite> getBarriers() {
 		ArrayList<DisplayableSprite> walls = new ArrayList<DisplayableSprite>();
 		for (int x = 0; x < map[0].length; x++) {
 			for (int y = 0; y < map.length; y++) {
-				 if (map[y][x] == 2) {
-	                    walls.add(new BarrierSprite(x * pixelWidth, y * pixelHeight, (x + 1) * pixelWidth, (y + 1) * pixelHeight, false));
-	                }
+				if (map[y][x] == 2) {
+					walls.add(new BarrierSprite(x * pixelWidth, y * pixelHeight, (x + 1) * pixelWidth, (y + 1) * pixelHeight, false));
+				}
 			}
+			
 		}
 		return walls;
 
