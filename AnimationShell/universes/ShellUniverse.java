@@ -13,7 +13,7 @@ public class ShellUniverse implements Universe {
 
 		this.setXCenter(0);
 		this.setYCenter(0);
-		map = new Map();
+		map = new Map(10,10);
 		ArrayList<DisplayableSprite> barriers = ((Map)map).getBarriers();
 		backgrounds.add(map);
 		player1 = new SimpleSprite(0,0);
