@@ -6,66 +6,92 @@ import java.util.Random;
 import javax.imageio.ImageIO;
 
 public class Map implements Background{
-    static int pixelHeight = 64;// TO BE DETERMINED
-    static int pixelWidth = 64;// TO BE DETERMINED
-    private int map[][];
-    private Image displayTile;
-    myMap mapMaker = new myMap();
-    public Map() {
-    	mapMaker.makeMap(10, 10);
-    	this.map = mapMaker.getDynamicMap();
-    }
-	@Override
-	public Tile getTile(int x, int y) {
-		int up = 0;
-		int down = 0;
-		int left = 0;
-		int right = 0;
-		if(map[y+1][x] == 1) {
-			down = 1;
-		}
-		if(map[y-1][x] == 1) {
-			up = 1;
-		}
-		if(map[y][x-1] == 1) {
-			left = 1;
-		}
-		if(map[y][x+1] == 1) {
-			right = 1;
-		}
-		String wallSides =String.format("%d,%d,%d,%d",up,down,left,right);
+	static int pixelHeight = 64;// TO BE DETERMINED
+	static int pixelWidth = 64;// TO BE DETERMINED
+	private int map[][];
+	private Image wallTile;
+	private Image backgroundTile;
+	myMap mapMaker = new myMap();
+	public Map() {
+		mapMaker.makeMap(10, 10);
+		this.map = mapMaker.getDynamicMap();
 		try {
-			this.displayTile = ImageIO.read(new File(String.format("res/backgrounds/%s.png", wallSides)));
+			this.backgroundTile = ImageIO.read(new File("res/0,0,0,0.png"));
 		} catch (IOException e) {
-			System.out.println(e.toString());
 			e.printStackTrace();
 		}
+	}
+	@Override
+	public Tile getTile(int x, int y) {
+		System.out.println("getTile called with x=" + x + " y=" + y);
 		int xSize = (x * pixelWidth );
-        int ySize = (y * pixelHeight);
-        Tile newTile = null;
-        if (y < 0 || x < 0 || y > map.length - 1 || x > map[0].length - 1) {
-            newTile = new Tile(null, xSize, ySize, pixelWidth, pixelHeight, false);
-            return newTile;
-        }
-        if(map[y][x] == 0) {
-        	newTile = new Tile (this.displayTile, x, y, pixelWidth, pixelHeight, false);
-        }
-        if(map[y][x] == 1) {
-        	newTile = new Tile (this.displayTile, x, y, pixelWidth, pixelHeight, false);
-        }
-        
+		int ySize = (y * pixelHeight);
+		Tile newTile = null;
+		if(map[y][x] == 1) {
+			newTile = new Tile (this.backgroundTile,xSize,ySize,pixelWidth,pixelHeight,false);
+		}
+		if (map[y][x] == 2) {
+			int up = 0;
+			int down = 0;
+			int left = 0;
+			int right = 0;
+			if( mapMaker.checkInBounds(y+1, x) && map[y+1][x] == 1 ) {
+				down = 1;
+			}
+			if(mapMaker.checkInBounds(y-1, x) && map[y-1][x] == 1) {
+				up = 1;
+			}
+			if( mapMaker.checkInBounds(y,x-1) && map[y][x-1] == 1 ) {
+				left = 1;
+			}
+			if( mapMaker.checkInBounds(y,x+1) && map[y][x+1] == 1 ) {
+				right = 1;
+			}
+			String wallSides =String.format("%d,%d,%d,%d",up,down,left,right);
+			try {
+				this.wallTile = ImageIO.read(new File(String.format("res/%s.png", wallSides)));
+			} catch (IOException e) {
+				System.out.println(e.toString());
+				e.printStackTrace();
+			}
+			newTile = new Tile (this.wallTile, x, y, pixelWidth, pixelHeight, false);
 
-		return null;
+		}
+		return newTile;
+	}
+	public ArrayList<DisplayableSprite> getBarriers() {
+		ArrayList<DisplayableSprite> walls = new ArrayList<DisplayableSprite>();
+		for (int x = 0; x < map[0].length; x++) {
+			for (int y = 0; y < map.length; y++) {
+				 if (map[y][x] == 2) {
+	                    walls.add(new BarrierSprite(x * pixelWidth, y * pixelHeight, (x + 1) * pixelWidth, (y + 1) * pixelHeight, false));
+	                }
+			}
+		}
+		return walls;
+
 	}
 	@Override
 	public int getCol(double x) {
-		// TODO Auto-generated method stub
-		return 0;
+		int col = 0;
+		col = (int) (x / pixelWidth);
+		if (x < 0) {
+			return col - 1;
+		}
+		else {
+			return col;
+		}
 	}
 	@Override
 	public int getRow(double y) {
-		// TODO Auto-generated method stub
-		return 0;
+		int row = 0;
+		row = (int) (y / pixelHeight);
+		if (y < 0) {
+			return row - 1;
+		}
+		else {
+			return row;
+		}
 	}
 	@Override
 	public double getShiftX() {
@@ -80,18 +106,18 @@ public class Map implements Background{
 	@Override
 	public void setShiftX(double shiftX) {
 		// TODO Auto-generated method stub
-		
+
 	}
 	@Override
 	public void setShiftY(double shiftY) {
 		// TODO Auto-generated method stub
-		
+
 	}
 	@Override
 	public void update(Universe universe, long actual_delta_time) {
 		// TODO Auto-generated method stub
-		
+
 	}
-    
-    
+
+
 }
