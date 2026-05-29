@@ -16,7 +16,7 @@ public class Map implements Background{
 	public Map(int x, int y) {
 		mapMaker.makeMap(x, y);
 		this.map = mapMaker.getDynamicMap();
-		
+		mapMaker.printMap(map);
 		try {
 			images.put("0000", ImageIO.read(new File("res/0,0,0,0.png")));
 			images.put("0001", ImageIO.read(new File("res/0,0,0,1.png")));
@@ -39,10 +39,11 @@ public class Map implements Background{
 			e.printStackTrace();
 		}
 
+
 		
 	}
 	private Image selectImage(int x, int y) {
-		if (y < 0 || y >= map.length  || x < 0 || x >= map[0].length) {
+		if ((y >= 0 && y < map.length && x >= 0 && x < map[0].length) {
 			return null;			
 		}
 		if (map[y][x] == 0) {
