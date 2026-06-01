@@ -7,16 +7,20 @@ import java.util.Random;
 import javax.imageio.ImageIO;
 
 public class Map implements Background{
-	static int pixelHeight = 128;// TO BE DETERMINED
-	static int pixelWidth = 128;// TO BE DETERMINED
+	static int pixelHeight = 32;// TO BE DETERMINED
+	static int pixelWidth = 32;// TO BE DETERMINED
 	private int map[][];
+	private int startxPos;
+	private int startyPos;
 	private HashMap<String, Image> images = new HashMap<>();
 	
 	myMap mapMaker = new myMap();
 	public Map(int x, int y) {
 		mapMaker.makeMap(x, y);
 		this.map = mapMaker.getDynamicMap();
-		mapMaker.printMap(map);
+		System.out.println(mapMaker.printMap(map));
+		startxPos = mapMaker.getxPos() * pixelWidth;
+		startyPos = mapMaker.getyPos() * pixelHeight;
 		try {
 			images.put("0000", ImageIO.read(new File("res/0,0,0,0.png")));
 			images.put("0001", ImageIO.read(new File("res/0,0,0,1.png")));
@@ -43,7 +47,7 @@ public class Map implements Background{
 		
 	}
 	private Image selectImage(int x, int y) {
-		if ((y >= 0 && y < map.length && x >= 0 && x < map[0].length) {
+		if (y < 0 || y >= map.length  || x < 0 || x >= map[0].length) {
 			return null;			
 		}
 		if (map[y][x] == 0) {
@@ -75,15 +79,10 @@ public class Map implements Background{
 		return null;
 	}
 	public Tile getTile(int x, int y) {
-
-		Tile newTile = new Tile (null, x, y, pixelWidth, pixelHeight, false);
-
-		if (y < 0 || y >= map.length  || x < 0 || x >= map[0].length) {
-			return newTile;			
-		}
 		int xSize = (x * pixelWidth );
 		int ySize = (y * pixelHeight);
-		newTile = new Tile (selectImage(x,y),xSize,ySize,pixelWidth,pixelHeight,false);
+		Tile newTile = new Tile (selectImage(x,y), xSize, ySize, pixelWidth, pixelHeight, false);
+
 		return newTile;
 	}
 	public ArrayList<DisplayableSprite> getBarriers() {
@@ -121,7 +120,12 @@ public class Map implements Background{
 			return row;
 		}
 	}
-	@Override
+	public double getStartxPos() {
+		return this.startxPos;
+	}
+	public double getStartyPos() {
+		return this.startyPos;
+	}
 	public double getShiftX() {
 		// TODO Auto-generated method stub
 		return 0;

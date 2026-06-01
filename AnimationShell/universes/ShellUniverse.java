@@ -10,14 +10,10 @@ public class ShellUniverse implements Universe {
 	private ArrayList<DisplayableSprite> disposalList = new ArrayList<DisplayableSprite>();
 
 	public ShellUniverse () {
-
-		this.setXCenter(0);
-		this.setYCenter(0);
-		map = new Map(10,10);
+		map = new Map(50,50);
 		ArrayList<DisplayableSprite> barriers = ((Map)map).getBarriers();
 		backgrounds.add(map);
-		player1 = new SimpleSprite(0,0);
-		sprites.add(player1);
+		player1 = new SimpleSprite(((Map)map).getStartxPos(),((Map)map).getStartyPos());
 		sprites.addAll(barriers);
 			
 	}

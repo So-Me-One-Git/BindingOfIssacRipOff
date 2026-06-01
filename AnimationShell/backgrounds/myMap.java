@@ -33,6 +33,12 @@ public class myMap {
 	public int getyPos() {
 		return this.yPos;
 	}
+	public int getStartxPos() {
+		return this.startxPos;
+	}
+	public int getStartyPos() {
+		return this.startyPos;
+	}
 	public int getMaxX(){
 		return dynamicMap[0].length;
 	}
@@ -288,13 +294,12 @@ public class myMap {
 					if ((y > 0) && (getElement(x,y - 1) == 1)){
 						adjacentRooms++;
 					}
-					if (adjacentRooms == 3 && random.nextInt(random.nextInt(2,5)) != 0){
+					if (adjacentRooms == 3 && random.nextDouble() < 0.4){
 						setElement(x,y,0);
 					}
-					if (adjacentRooms == 4 && random.nextInt(random.nextInt(5,10)) != 0){
+					if (adjacentRooms == 4 && random.nextDouble() < 0.8){
 						setElement(x,y,0);
 					}
-
 				}
 			}
 		}
@@ -306,7 +311,7 @@ public class myMap {
 		int downWeight = 1;
 		int currentDirection = random.nextInt(4);
 		int diagonal = random.nextInt(2);
-		int size = random.nextInt(5,15);
+		int size = random.nextInt(10,15);
 		switch(diagonal) {
 		case 0:
 			switch(currentDirection) {
