@@ -10,12 +10,13 @@ public class ShellUniverse implements Universe {
 	private ArrayList<DisplayableSprite> disposalList = new ArrayList<DisplayableSprite>();
 
 	public ShellUniverse () {
-		map = new Map(50,50);
+		map = new Map(10,10);
 		ArrayList<DisplayableSprite> barriers = ((Map)map).getBarriers();
+		barriers.addAll(((Map)map).getBarriers());
 		backgrounds.add(map);
-		player1 = new SimpleSprite(((Map)map).getStartxPos(),((Map)map).getStartyPos());
+		player1 = new SimpleSprite(((Map)map).getStartxPos() - ((Map)map).getPixelWidth()/2 ,((Map)map).getStartyPos()  - ((Map)map).getPixelHeight()/2 ,((Map)map).getPixelHeight()/3,((Map)map).getPixelWidth()/3);
 		sprites.addAll(barriers);
-			
+		sprites.add(player1);
 	}
 
 	public double getScale() {

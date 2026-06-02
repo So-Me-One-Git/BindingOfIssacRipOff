@@ -1,11 +1,13 @@
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
 public class SimpleSprite implements DisplayableSprite {
 
+	private static final double HITBOX_CONSTANT  = -1;
 	private static Image image;	
 	private double centerX = 0;
 	private double centerY = 0;
@@ -91,21 +93,21 @@ public class SimpleSprite implements DisplayableSprite {
 		double velocityY = 0;
 		
 		KeyboardInput keyboard = KeyboardInput.getKeyboard();
-
+		
 		//LEFT	
-		if (keyboard.keyDown(37)) {
+		if ((keyboard.keyDown(37)) && checkCollisionWithBarrier(universe.getSprites(), velocityX + HITBOX_CONSTANT, 0 ) == false) {
 			velocityX = -VELOCITY;
 		}
 		//UP
-		if (keyboard.keyDown(38)) {
+		if ((keyboard.keyDown(38)) && checkCollisionWithBarrier(universe.getSprites(), velocityX, 0) == false) {
 			velocityY = -VELOCITY;			
 		}
 		// RIGHT
-		if (keyboard.keyDown(39)) {
+		if ((keyboard.keyDown(39)) && checkCollisionWithBarrier(universe.getSprites(), velocityX, 0) == false) {
 			velocityX += VELOCITY;
 		}
 		// DOWN
-		if (keyboard.keyDown(40)) {
+		if ((keyboard.keyDown(40)) && checkCollisionWithBarrier(universe.getSprites(), velocityX, 0) == false) {
 			velocityY += VELOCITY;			
 		}
 
@@ -122,5 +124,21 @@ public class SimpleSprite implements DisplayableSprite {
 	public void setDispose(boolean dispose) {
 		this.dispose = true;
 	}
+	private boolean checkCollisionWithBarrier(ArrayList<DisplayableSprite> sprites, double futureX, double futureY) {
 
+		boolean colliding = false;
+
+		for (DisplayableSprite sprite : sprites) {
+			if (sprite instanceof BarrierSprite) {
+				if (CollisionDetection.overlaps(this.getMinX() + futureX, this.getMinY() + futureY, 
+						this.getMaxX()  + futureX, this.getMaxY() + futureY , 
+						sprite.getMinX(),sprite.getMinY(), 
+						sprite.getMaxX(), sprite.getMaxY())) {
+					colliding = true;
+					break;					
+				}
+			}
+		}		
+		return colliding;		
+	}
 }

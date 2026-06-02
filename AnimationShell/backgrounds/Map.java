@@ -7,8 +7,8 @@ import java.util.Random;
 import javax.imageio.ImageIO;
 
 public class Map implements Background{
-	static int pixelHeight = 32;// TO BE DETERMINED
-	static int pixelWidth = 32;// TO BE DETERMINED
+	private int pixelHeight = 32;// TO BE DETERMINED
+	private int pixelWidth = 32;// TO BE DETERMINED
 	private int map[][];
 	private int startxPos;
 	private int startyPos;
@@ -19,8 +19,8 @@ public class Map implements Background{
 		mapMaker.makeMap(x, y);
 		this.map = mapMaker.getDynamicMap();
 		System.out.println(mapMaker.printMap(map));
-		startxPos = mapMaker.getxPos() * pixelWidth;
-		startyPos = mapMaker.getyPos() * pixelHeight;
+		startxPos = mapMaker.getStartxPos() * pixelWidth;
+		startyPos = mapMaker.getStartyPos() * pixelHeight;
 		try {
 			images.put("0000", ImageIO.read(new File("res/0,0,0,0.png")));
 			images.put("0001", ImageIO.read(new File("res/0,0,0,1.png")));
@@ -119,6 +119,12 @@ public class Map implements Background{
 		else {
 			return row;
 		}
+	}
+	public double getPixelWidth() {
+		return this.pixelWidth;
+	}
+	public double getPixelHeight() {
+		return this.pixelHeight;
 	}
 	public double getStartxPos() {
 		return this.startxPos;

@@ -9,14 +9,11 @@ public class myMap {
 	private int startxPos;
 	private int startyPos;
 	private static final Random random = new Random();
-	private int[][] dynamicMap;
+	int[][] dynamicMap;
 
 	public void setStartPos(int x, int y) {
 		this.startxPos = x;
 		this.startyPos = y;
-		this.xPos = x;
-		this.yPos = y;
-		dynamicMap[startyPos][startxPos] = 1;
 	}
 	public void dynamicMap(int x, int y) {
 		this.dynamicMap = new int[y][x];
@@ -183,6 +180,17 @@ public class myMap {
 	    }
 	    return false;
 	}
+	public boolean findStartPos() {
+		while (true) {
+		    int ranX = random.nextInt(getMaxX());
+		    int ranY = random.nextInt(getMaxY());
+
+		    if (getElement(ranX, ranY) == 1) {
+		        setStartPos(ranX, ranY);
+		        return true;
+		    }
+		}
+	}
 
 	public boolean findRandomRoom() {
 		if(oneExist()) {
@@ -224,6 +232,7 @@ public class myMap {
 			}else {
 				dynamicMap = expandWithBorder(dynamicMap);
 				makeBarrier();
+				findStartPos();
 			}
 	}
 	public int[][] expandWithBorder(int[][] grid) {
@@ -300,6 +309,7 @@ public class myMap {
 					if (adjacentRooms == 4 && random.nextDouble() < 0.8){
 						setElement(x,y,0);
 					}
+
 				}
 			}
 		}
@@ -311,7 +321,7 @@ public class myMap {
 		int downWeight = 1;
 		int currentDirection = random.nextInt(4);
 		int diagonal = random.nextInt(2);
-		int size = random.nextInt(10,15);
+		int size = random.nextInt(5,15);
 		switch(diagonal) {
 		case 0:
 			switch(currentDirection) {
