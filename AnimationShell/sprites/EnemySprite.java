@@ -11,8 +11,8 @@ public class EnemySprite implements DisplayableSprite {
 	private double centerY = 0;
 	private double width = 50;
 	private double height = 50;
-	private boolean dispose = false;	
-
+	private boolean dispose = false;
+	private static playerPosition PP = new playerPosition();
 	private final double VELOCITY = 200;
 
 	public EnemySprite(double centerX, double centerY, double height, double width) {
@@ -86,7 +86,7 @@ public class EnemySprite implements DisplayableSprite {
 	}
 
 	public void update(Universe universe, long actual_delta_time) {
-
+		//universe.getSprites()
 		double velocityX = 0;
 		double velocityY = 0;
 		double futureVelocityX = VELOCITY/60;

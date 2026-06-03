@@ -89,48 +89,31 @@ public class SimpleSprite implements DisplayableSprite {
 
 		double velocityX = 0;
 		double velocityY = 0;
-		double futureVelocityX = VELOCITY/60;
-		double futureVelocityY = VELOCITY/60;
+	
 		KeyboardInput keyboard = KeyboardInput.getKeyboard();
 
+		if (keyboard.keyDown(37))
+		    velocityX = -VELOCITY;
 
-		//up
-		if (keyboard.keyDown(38)){
-			if(checkCollisionWithBarrier(universe.getSprites(), 0 , velocityY - futureVelocityY ) == true) {
-				velocityY = 0;
-			}else {
-				velocityY = -VELOCITY;
-			}
-		}
-		//down
-		if (keyboard.keyDown(40)){
-			if(checkCollisionWithBarrier(universe.getSprites(), 0 , velocityY + futureVelocityY ) == true) {
-				velocityY = 0;
-			}else {
-				velocityY = +VELOCITY;
-			}
-		}
-		//left	
-		if (keyboard.keyDown(37)){
-			if(checkCollisionWithBarrier(universe.getSprites(), velocityX - futureVelocityX, 0 ) == true) {
-				velocityX = 0;
-			}else {
-				velocityX = -VELOCITY;
-			}
-		}
-		//right
-		if (keyboard.keyDown(39)){
-			if(checkCollisionWithBarrier(universe.getSprites(), velocityX + futureVelocityX, 0 ) == true) {
-				velocityX = 0;
-			}else {
-				velocityX = +VELOCITY;
-			}
-		}
+		if (keyboard.keyDown(39))
+		    velocityX = VELOCITY;
+
+		if (keyboard.keyDown(38))
+		    velocityY = -VELOCITY;
+
+		if (keyboard.keyDown(40))
+		    velocityY = VELOCITY;
 		double deltaX = actual_delta_time * 0.001 * velocityX;
-		this.centerX += deltaX;
-
 		double deltaY = actual_delta_time * 0.001 * velocityY;
-		this.centerY += deltaY;
+		if (!checkCollisionWithBarrier(universe.getSprites(), deltaX, 0))
+		{
+		    centerX += deltaX;
+		}
+
+		if (!checkCollisionWithBarrier(universe.getSprites(), 0, deltaY))
+		{
+		    centerY += deltaY;
+		}
 
 	}
 
