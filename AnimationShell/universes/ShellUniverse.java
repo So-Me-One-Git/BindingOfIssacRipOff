@@ -10,7 +10,7 @@ public class ShellUniverse implements Universe {
 	private ArrayList<DisplayableSprite> disposalList = new ArrayList<DisplayableSprite>();
 
 	public ShellUniverse () {
-		map = new Map(10,10);
+		map = new Map(50,50);
 		ArrayList<DisplayableSprite> barriers = ((Map)map).getBarriers();
 		ArrayList<DisplayableSprite> enemies = ((Map)map).getEnemies();
 		barriers.addAll(((Map)map).getBarriers());
