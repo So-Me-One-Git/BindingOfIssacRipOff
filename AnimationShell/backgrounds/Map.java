@@ -19,8 +19,8 @@ public class Map implements Background{
 		mapMaker.makeMap(x, y);
 		this.map = mapMaker.getDynamicMap();
 		System.out.println(mapMaker.printMap(map));
-		startxPos = mapMaker.getStartxPos() * pixelWidth;
-		startyPos = mapMaker.getStartyPos() * pixelHeight;
+		startxPos = (mapMaker.getStartxPos() + 1) * pixelWidth - pixelWidth/2;
+		startyPos = (mapMaker.getStartyPos() + 1) * pixelHeight - pixelHeight/2;
 		try {
 			images.put("0000", ImageIO.read(new File("res/0,0,0,0.png")));
 			images.put("0001", ImageIO.read(new File("res/0,0,0,1.png")));
@@ -53,7 +53,7 @@ public class Map implements Background{
 		if (map[y][x] == 0) {
 			return null;
 		}
-		if(map[y][x] == 1) {
+		if(map[y][x] == 1 || map[y][x] == 3) {
 			return images.get("0000");
 		}
 		if (map[y][x] == 2) {
@@ -61,16 +61,16 @@ public class Map implements Background{
 			int down = 0;
 			int left = 0;
 			int right = 0;
-			if( mapMaker.checkInBounds(y+1, x) && map[y+1][x] == 1 ) {
+			if( mapMaker.checkInBounds(y+1, x) && (map[y+1][x] == 1 || map[y+1][x] == 3)) {
 				down = 1;
 			}
-			if(mapMaker.checkInBounds(y-1, x) && map[y-1][x] == 1) {
+			if(mapMaker.checkInBounds(y-1, x) && (map[y-1][x] == 1 || map[y-1][x] == 3)) {
 				up = 1;
 			}
-			if( mapMaker.checkInBounds(y,x-1) && map[y][x-1] == 1 ) {
+			if( mapMaker.checkInBounds(y,x-1) && (map[y][x-1] == 1 || map[y][x-1] == 3)) {
 				left = 1;
 			}
-			if( mapMaker.checkInBounds(y,x+1) && map[y][x+1] == 1 ) {
+			if( mapMaker.checkInBounds(y,x+1) && (map[y][x+1] == 1 || map[y][x+1] == 3)) {
 				right = 1;
 			}
 			String wallSides =String.format("%d%d%d%d",up,down,left,right);
@@ -97,6 +97,24 @@ public class Map implements Background{
 		}
 		return walls;
 
+	}
+	public ArrayList<DisplayableSprite> getEnemies() {
+		ArrayList<DisplayableSprite> enemies = new ArrayList<DisplayableSprite>();
+		for (int x = 0; x < map[0].length; x++) {
+			for (int y = 0; y < map.length; y++) {
+				if (map[y][x] == 3) {
+					enemies.add(new EnemySprite(getxScale(x), getyScale(y),this.pixelWidth/3,this.pixelHeight/3));
+				}
+			}
+		}
+		return enemies;
+		
+	}
+	private int getxScale(int x) {
+		return( x + 1) * pixelWidth - pixelWidth/2;
+	}
+	private int getyScale(int y) {
+		return (y + 1) * pixelHeight - pixelHeight/2;
 	}
 	@Override
 	public int getCol(double x) {

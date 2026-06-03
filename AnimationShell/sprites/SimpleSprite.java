@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 
 public class SimpleSprite implements DisplayableSprite {
-
-	private static final double HITBOX_CONSTANT  = -1;
 	private static Image image;	
 	private double centerX = 0;
 	private double centerY = 0;
@@ -19,17 +17,17 @@ public class SimpleSprite implements DisplayableSprite {
 
 	public SimpleSprite(double centerX, double centerY, double height, double width) {
 		this(centerX, centerY);
-		
+
 		this.height = height;
 		this.width = width;
 	}
 
-	
+
 	public SimpleSprite(double centerX, double centerY) {
 
 		this.centerX = centerX;
 		this.centerY = centerY;
-		
+
 		if (image == null) {
 			try {
 				image = ImageIO.read(new File("res/simple-sprite.png"));
@@ -43,13 +41,13 @@ public class SimpleSprite implements DisplayableSprite {
 	public Image getImage() {
 		return image;
 	}
-	
+
 	//DISPLAYABLE
-	
+
 	public boolean getVisible() {
 		return true;
 	}
-	
+
 	public double getMinX() {
 		return centerX - (width / 2);
 	}
@@ -81,41 +79,58 @@ public class SimpleSprite implements DisplayableSprite {
 	public double getCenterY() {
 		return centerY;
 	};
-	
-	
+
+
 	public boolean getDispose() {
 		return dispose;
 	}
 
 	public void update(Universe universe, long actual_delta_time) {
-		
+
 		double velocityX = 0;
 		double velocityY = 0;
-		
+		double futureVelocityX = VELOCITY/60;
+		double futureVelocityY = VELOCITY/60;
 		KeyboardInput keyboard = KeyboardInput.getKeyboard();
-		
-		//LEFT	
-		if ((keyboard.keyDown(37)) && checkCollisionWithBarrier(universe.getSprites(), velocityX + HITBOX_CONSTANT, 0 ) == false) {
-			velocityX = -VELOCITY;
-		}
-		//UP
-		if ((keyboard.keyDown(38)) && checkCollisionWithBarrier(universe.getSprites(), velocityX, 0) == false) {
-			velocityY = -VELOCITY;			
-		}
-		// RIGHT
-		if ((keyboard.keyDown(39)) && checkCollisionWithBarrier(universe.getSprites(), velocityX, 0) == false) {
-			velocityX += VELOCITY;
-		}
-		// DOWN
-		if ((keyboard.keyDown(40)) && checkCollisionWithBarrier(universe.getSprites(), velocityX, 0) == false) {
-			velocityY += VELOCITY;			
-		}
 
+
+		//up
+		if (keyboard.keyDown(38)){
+			if(checkCollisionWithBarrier(universe.getSprites(), 0 , velocityY - futureVelocityY ) == true) {
+				velocityY = 0;
+			}else {
+				velocityY = -VELOCITY;
+			}
+		}
+		//down
+		if (keyboard.keyDown(40)){
+			if(checkCollisionWithBarrier(universe.getSprites(), 0 , velocityY + futureVelocityY ) == true) {
+				velocityY = 0;
+			}else {
+				velocityY = +VELOCITY;
+			}
+		}
+		//left	
+		if (keyboard.keyDown(37)){
+			if(checkCollisionWithBarrier(universe.getSprites(), velocityX - futureVelocityX, 0 ) == true) {
+				velocityX = 0;
+			}else {
+				velocityX = -VELOCITY;
+			}
+		}
+		//right
+		if (keyboard.keyDown(39)){
+			if(checkCollisionWithBarrier(universe.getSprites(), velocityX + futureVelocityX, 0 ) == true) {
+				velocityX = 0;
+			}else {
+				velocityX = +VELOCITY;
+			}
+		}
 		double deltaX = actual_delta_time * 0.001 * velocityX;
-        this.centerX += deltaX;
-		
+		this.centerX += deltaX;
+
 		double deltaY = actual_delta_time * 0.001 * velocityY;
-    	this.centerY += deltaY;
+		this.centerY += deltaY;
 
 	}
 

@@ -1,8 +1,17 @@
 
 import java.util.Random;
+
+import project.OverlapException;
+import project.Point;
+
 import java.util.ArrayList;
 
 public class myMap {
+
+	private int emptyRoom = 1;
+	private int border = 2;
+	private int nothing = 0;
+	private int enemy = 3;
 	private int xPos = 0;
 	private int yPos = 0;
 	private double fillPercent = 0.35;
@@ -53,7 +62,7 @@ public class myMap {
 	}
 	public void goUp() throws OverlapException {
 		if(!checkOverlap("up")) {
-			dynamicMap[yPos-1][xPos]++;
+			setElement(xPos,yPos-1,emptyRoom);
 			yPos--;
 		}else {
 			throw new OverlapException("Overlap");
@@ -62,7 +71,7 @@ public class myMap {
 
 	public void goDown() throws OverlapException {
 		if(!checkOverlap("down")) {
-			dynamicMap[yPos+1][xPos]++;
+			setElement(xPos,yPos+1,emptyRoom);
 			yPos++;
 		}else {
 			throw new OverlapException("Overlap");
@@ -70,7 +79,7 @@ public class myMap {
 	}
 	public void goRight() throws OverlapException {
 		if(!checkOverlap("right")) {
-			dynamicMap[yPos][xPos+1]++;
+			setElement(xPos+1,yPos,emptyRoom);
 			xPos++;
 		}else {
 			throw new OverlapException("Overlap");
@@ -78,7 +87,7 @@ public class myMap {
 	}
 	public void goLeft() throws OverlapException {
 		if(!checkOverlap("left")) {
-			dynamicMap[yPos][xPos-1]++;
+			setElement(xPos-1,yPos,emptyRoom);
 			xPos--;
 		}else {
 			throw new OverlapException("Overlap");
@@ -175,7 +184,8 @@ public class myMap {
 	public boolean oneExist() {
 	    for (int y = 0; y < getMaxY(); y++) {
 	        for (int x = 0; x < getMaxX(); x++) {
-	            if (getElement(x, y) == 1) return true;
+	            if (getElement(x, y) == emptyRoom) 
+	            	return true;
 	        }
 	    }
 	    return false;
@@ -185,7 +195,7 @@ public class myMap {
 		    int ranX = random.nextInt(getMaxX());
 		    int ranY = random.nextInt(getMaxY());
 
-		    if (getElement(ranX, ranY) == 1) {
+		    if (getElement(ranX, ranY) == emptyRoom) {
 		        setStartPos(ranX, ranY);
 		        return true;
 		    }
@@ -201,7 +211,7 @@ public class myMap {
 			if(percentFilled() == 1) {
 				return false;
 			}
-			if (getElement(ranX, ranY) == 1) {
+			if (getElement(ranX, ranY) == emptyRoom) {
 				setxPos(ranX);
 				setyPos(ranY);
 				if (checkStuck()) {
@@ -220,7 +230,6 @@ public class myMap {
 	public void makeMap(int x, int y) {
 		makeMap(x,y,1);
 	}
-
 	public void makeMap(int x, int y, int size) {
 			dynamicMap(x, y);
 			setStartPos(x/2, y/2);
@@ -233,6 +242,7 @@ public class myMap {
 				dynamicMap = expandWithBorder(dynamicMap);
 				makeBarrier();
 				findStartPos();
+				makeEnemy();
 			}
 	}
 	public int[][] expandWithBorder(int[][] grid) {
@@ -252,33 +262,49 @@ public class myMap {
 	public void makeBarrier() {
 			for(int y = 0; y < getMaxY(); y++) {
 				for(int x = 0; x < getMaxX(); x++) {
-						if(getElement(x,y) == 0 && adjacentOne(x,y)) {
-							setElement(x, y, 2);
+						if(getElement(x,y) == nothing && (adjacentOne(x,y) != 0)) {
+							setElement(x, y, border);
 						}
 					}
 				}
 	}
-	public boolean adjacentOne(int x, int y) {
-	    if (checkInBounds(x, y + 1) && getElement(x, y + 1) == 1) {
-	        return true;
+	public void makeEnemy() {
+		for(int y = 0; y < getMaxY(); y++) {
+			for(int x = 0; x < getMaxX(); x++) {
+				if(adjacentOne(x,y) == 2 && getElement(x,y) == emptyRoom && random.nextDouble() < 0.2) {
+					setElement(x,y, enemy);
+				}
+				if(adjacentOne(x,y) == 3 && getElement(x,y) == emptyRoom && random.nextDouble() < 0.4) {
+					setElement(x,y, enemy);
+				}
+				if(adjacentOne(x,y) == 4 && getElement(x,y) == emptyRoom && random.nextDouble() < 0.6) {
+					setElement(x,y, enemy);
+				}
+			}
+		}
+	}
+	public int adjacentOne(int x, int y) {
+		int amount = 0;
+	    if (checkInBounds(x, y + 1) && getElement(x, y + 1) == emptyRoom) {
+	        amount++;
 	    }
-	    if (checkInBounds(x, y - 1) && getElement(x, y - 1) == 1) {
-	        return true;
+	    if (checkInBounds(x, y - 1) && getElement(x, y - 1) == emptyRoom) {
+	    	amount++;
 	    }
-	    if (checkInBounds(x + 1, y) && getElement(x + 1, y) == 1) {
-	        return true;
+	    if (checkInBounds(x + 1, y) && getElement(x + 1, y) == emptyRoom) {
+	    	amount++;
 	    }
-	    if (checkInBounds(x - 1, y) && getElement(x - 1, y) == 1) {
-	        return true;
+	    if (checkInBounds(x - 1, y) && getElement(x - 1, y) == emptyRoom) {
+	    	amount++;
 	    }
-	    return false;
+	    return amount;
 	}
 	
 	public float percentFilled() {
 		int ones = 0;
 		for(int y = 0; y < getMaxY(); y++) {
 			for(int x = 0; x < getMaxX(); x++) {
-				if(getElement(x,y) == 1) {
+				if(getElement(x,y) == emptyRoom) {
 					ones++;
 				}
 			}
@@ -288,26 +314,12 @@ public class myMap {
 	public void makeNoise() {
 		for(int y = 0; y < getMaxY(); y++) {
 			for(int x = 0; x < getMaxX(); x++) {
-				int adjacentRooms = 0;
-				if (getElement(x,y) == 1) {
-					adjacentRooms++;
-					if (x < getMaxX() - 1 && getElement(x + 1, y) == 1){
-						adjacentRooms++;
+				if (getElement(x,y) == 1 && adjacentOne(x,y) != 0) {
+					if (adjacentOne(x,y) == 3 && random.nextDouble() < 0.4){
+						setElement(x,y,nothing);
 					}
-					if (x > 0 && (getElement(x - 1,y) == 1)){
-						adjacentRooms++;
-					}
-					if ((y < getMaxX() - 1) && getElement(x, y + 1) == 1){
-						adjacentRooms++;
-					}
-					if ((y > 0) && (getElement(x,y - 1) == 1)){
-						adjacentRooms++;
-					}
-					if (adjacentRooms == 3 && random.nextDouble() < 0.4){
-						setElement(x,y,0);
-					}
-					if (adjacentRooms == 4 && random.nextDouble() < 0.8){
-						setElement(x,y,0);
+					if (adjacentOne(x,y) == 4 && random.nextDouble() < 0.8){
+						setElement(x,y,nothing);
 					}
 
 				}
@@ -375,7 +387,7 @@ public class myMap {
 	        return;
 	    }
 
-	    if(visited[y][x] || getElement(x, y) != 1) {
+	    if(visited[y][x] || getElement(x, y) != emptyRoom) {
 	        return;
 	    }
 
@@ -396,7 +408,7 @@ public class myMap {
 	    for(int y = 0; y < getMaxY(); y++) {
 	        for(int x = 0; x < getMaxX(); x++) {
 
-	            if(getElement(x, y) == 1 && !visited[y][x]) {
+	            if(getElement(x, y) == emptyRoom && !visited[y][x]) {
 
 	                ArrayList<Point> cluster = new ArrayList<>();
 
@@ -457,16 +469,16 @@ public class myMap {
 	    int y = a.y;
 
 	    while(x != b.x) {
-	        setElement(x, y, 1);
+	        setElement(x, y, emptyRoom);
 	        x += Integer.signum(b.x - x);
 	    }
 
 	    while(y != b.y) {
-	        setElement(x, y, 1);
+	        setElement(x, y, emptyRoom);
 	        y += Integer.signum(b.y - y);
 	    }
 
-	    setElement(x, y, 1);
+	    setElement(x, y, emptyRoom);
 	}
 	
 
