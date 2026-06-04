@@ -186,6 +186,7 @@ public class myMap {
 
 		    if (getElement(ranX, ranY) == 1) {
 		        setStartPos(ranX, ranY);
+		        setElement(ranX,ranY,4);
 		        return true;
 		    }
 		}

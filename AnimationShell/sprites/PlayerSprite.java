@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
-public class SimpleSprite implements DisplayableSprite {
+public class PlayerSprite implements DisplayableSprite {
 	private static Image image;	
 	private double centerX = 0;
 	private double centerY = 0;
@@ -15,7 +15,7 @@ public class SimpleSprite implements DisplayableSprite {
 
 	private final double VELOCITY = 200;
 
-	public SimpleSprite(double centerX, double centerY, double height, double width) {
+	public PlayerSprite(double centerX, double centerY, double height, double width) {
 		this(centerX, centerY);
 
 		this.height = height;
@@ -23,7 +23,7 @@ public class SimpleSprite implements DisplayableSprite {
 	}
 
 
-	public SimpleSprite(double centerX, double centerY) {
+	public PlayerSprite(double centerX, double centerY) {
 
 		this.centerX = centerX;
 		this.centerY = centerY;

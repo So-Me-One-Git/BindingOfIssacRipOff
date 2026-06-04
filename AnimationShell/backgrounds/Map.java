@@ -10,17 +10,16 @@ public class Map implements Background{
 	private int pixelHeight = 32;// TO BE DETERMINED
 	private int pixelWidth = 32;// TO BE DETERMINED
 	private int map[][];
-	private int startxPos;
-	private int startyPos;
+	private DisplayableSprite player;
 	private HashMap<String, Image> images = new HashMap<>();
-	
 	myMap mapMaker = new myMap();
 	public Map(int x, int y) {
 		mapMaker.makeMap(x, y);
 		this.map = mapMaker.getDynamicMap();
 		System.out.println(mapMaker.printMap(map));
-		startxPos = (mapMaker.getStartxPos() + 1) * pixelWidth - pixelWidth/2;
-		startyPos = (mapMaker.getStartyPos() + 1) * pixelHeight - pixelHeight/2;
+		int startxPos = (mapMaker.getStartxPos() + 1) * pixelWidth - pixelWidth/2;
+		int startyPos = (mapMaker.getStartyPos() + 1) * pixelHeight - pixelHeight/2;
+		player =  new PlayerSprite(startxPos,startyPos,getPixelHeight()/3,getPixelWidth()/3);
 		try {
 			images.put("0000", ImageIO.read(new File("res/0,0,0,0.png")));
 			images.put("0001", ImageIO.read(new File("res/0,0,0,1.png")));
@@ -53,7 +52,7 @@ public class Map implements Background{
 		if (map[y][x] == 0) {
 			return null;
 		}
-		if(map[y][x] == 1 || map[y][x] == 3) {
+		if(map[y][x] == 1 || map[y][x] == 3 || map[y][x] == 4) {
 			return images.get("0000");
 		}
 		if (map[y][x] == 2) {
@@ -61,16 +60,16 @@ public class Map implements Background{
 			int down = 0;
 			int left = 0;
 			int right = 0;
-			if( mapMaker.checkInBounds(y+1, x) && (map[y+1][x] == 1 || map[y+1][x] == 3)) {
+			if( mapMaker.checkInBounds(y+1, x) && (map[y+1][x] == 1 || map[y+1][x] == 3|| map[y+1][x] == 4)) {
 				down = 1;
 			}
-			if(mapMaker.checkInBounds(y-1, x) && (map[y-1][x] == 1 || map[y-1][x] == 3)) {
+			if(mapMaker.checkInBounds(y-1, x) && (map[y-1][x] == 1 || map[y-1][x] == 3 || map[y-1][x] == 4)) {
 				up = 1;
 			}
-			if( mapMaker.checkInBounds(y,x-1) && (map[y][x-1] == 1 || map[y][x-1] == 3)) {
+			if( mapMaker.checkInBounds(y,x-1) && (map[y][x-1] == 1 || map[y][x-1] == 3|| map[y][x-1] == 4)) {
 				left = 1;
 			}
-			if( mapMaker.checkInBounds(y,x+1) && (map[y][x+1] == 1 || map[y][x+1] == 3)) {
+			if( mapMaker.checkInBounds(y,x+1) && (map[y][x+1] == 1 || map[y][x+1] == 3 || map[y][x+1] == 4)) {
 				right = 1;
 			}
 			String wallSides =String.format("%d%d%d%d",up,down,left,right);
@@ -103,12 +102,15 @@ public class Map implements Background{
 		for (int x = 0; x < map[0].length; x++) {
 			for (int y = 0; y < map.length; y++) {
 				if (map[y][x] == 3) {
-					enemies.add(new EnemySprite(getxScale(x), getyScale(y),this.pixelWidth/3,this.pixelHeight/3));
+					enemies.add(new EnemySprite(getxScale(x), getyScale(y),this.pixelWidth/3,this.pixelHeight/3, player,this.map, this.pixelWidth, this.pixelHeight));
 				}
 			}
 		}
 		return enemies;
 		
+	}
+	public DisplayableSprite getPlayer() {
+		return this.player;
 	}
 	private int getxScale(int x) {
 		return( x + 1) * pixelWidth - pixelWidth/2;
@@ -143,12 +145,6 @@ public class Map implements Background{
 	}
 	public double getPixelHeight() {
 		return this.pixelHeight;
-	}
-	public double getStartxPos() {
-		return this.startxPos;
-	}
-	public double getStartyPos() {
-		return this.startyPos;
 	}
 	public double getShiftX() {
 		// TODO Auto-generated method stub

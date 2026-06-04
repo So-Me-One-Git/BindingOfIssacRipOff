@@ -3,20 +3,20 @@ import java.util.ArrayList;
 public class ShellUniverse implements Universe {
 
 	private boolean complete = false;	
+	private Background map = null;
 	private DisplayableSprite player1 = null;
-	 private Background map = null;
 	private ArrayList<DisplayableSprite> sprites = new ArrayList<DisplayableSprite>();
 	private ArrayList<Background> backgrounds = new ArrayList<Background>();
 	private ArrayList<DisplayableSprite> disposalList = new ArrayList<DisplayableSprite>();
 
 	public ShellUniverse () {
 		map = new Map(50,50);
+		player1 = ((Map)map).getPlayer();
 		ArrayList<DisplayableSprite> barriers = ((Map)map).getBarriers();
 		ArrayList<DisplayableSprite> enemies = ((Map)map).getEnemies();
 		barriers.addAll(((Map)map).getBarriers());
 		enemies.addAll(((Map)map).getEnemies());
 		backgrounds.add(map);
-		player1 = new SimpleSprite(((Map)map).getStartxPos(),((Map)map).getStartyPos(),((Map)map).getPixelHeight()/3,((Map)map).getPixelWidth()/3);
 		sprites.addAll(barriers);
 		sprites.addAll(enemies);
 		sprites.add(player1);
